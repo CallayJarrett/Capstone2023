@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="homepage">
+  <div class="left-div">
+    <h2 id="changing-text">Photo editing made easy. Just use your voice.</h2>
+    <div class="text">
+    <p>Think, Speak, Create</p>
+    <p>A new way to make your designs come alive - Powered by AI</p>
+    <p>No Design Experience Required!</p>
+    <a href="{{ url_for('edit') }}"><button id="start-editing-btn">Start Editing</button></a>
+  </div>
+  </div>
+  <div class="right-div">
+    <video class="video-element" src="{{ url_for('static', filename='images/video.mp4') }}" autoplay muted loop></video>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+{% endblock %}
+
+{% block main %}
+
+<!--Shortcut Commands-->
+<div class="Shortcuts">
+    <div>
+        <p id="shortcutpara">Shortcuts</p>
+    </div>
+    <div >
+        <button class="editbtns">Crop</button> 
+        <button class="editbtns">Resize</button> 
+        <button class="editbtns">Blur</button>
+        <button class="editbtns">Opacity</button>
+        <button class="editbtns">Hue</button>
+        <button class="editbtns">Saturation</button>
+    </div>
+</div>
+
+<!--Edit Plus Btn-->
+<div class="editpage">
+    <img src="{{ url_for('static', filename='images/plusbtn.jpg') }}" alt="Button" id="plusbtn" width="150" height="150">
+    <button id="newEdit">New Edit</button>
+</div>
+
+  
+{% endblock %}
+
+{% block js %} 
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock%}

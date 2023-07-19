@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+{% endblock %}
+
+{% block main %}
+<div class="editpage">
+    <img src="{{ url_for('static', filename='images/plusbtn.jpg') }}" alt="Button" id="plusbtn" width="60" height="60">
+    <p class="lead">New Edit.</p>
+</div>
+  
+{% endblock %}
+
+{% block js %} 
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock%}
