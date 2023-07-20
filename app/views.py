@@ -1,9 +1,12 @@
 import os
-from app import app
+from app import app, db
 from flask import render_template, request, redirect, url_for, flash
 from app.speech import *
 from werkzeug.utils import secure_filename
-from app.forms import PhotoForm
+from werkzeug.security import check_password_hash
+from app.forms import UserForm, LoginForm, PhotoForm
+from app.models import User, Photo, VoiceCommand, Designs, ExtendScriptFile
+from flask_wtf.csrf import generate_csrf
 
 
 @app.route('/')
@@ -42,22 +45,20 @@ def scripts():
     return render_template('scripts.html')
 
 
-@app.route('/uploadphoto')
+@app.route('/uploadphoto', methods=['POST', 'GET'])
 def uploadphoto():
     """Render website's upload page."""
     photoform = PhotoForm()
 
-    if photoform.validate_on_submit():
+    if request.method == 'POST':
+        if photoform.validate_on_submit():
 
-        photo = photoform.photo.data # we could also use request.files['photo']
-       
-
-        filename = secure_filename(photo.filename)
-        photo.save(os.path.join(
-            app.config['UPLOAD_FOLDER'], filename
-        ))
-
-    return render_template('upload.html', filename=filename, form=photoform)
+            photo = photoform.photo.data 
+            filename = secure_filename(photo.filename)
+            photo.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], filename
+            ))
+    return render_template('upload.html', form=photoform)
 
    
 
