@@ -4,9 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config(object):
-    """Base Config Object"""
-    DEBUG = False
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'Sup3r$3cretkey')
-    UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False 
+    UPLOAD_FOLDER = './app/static/uploads'
+    SECRET_KEY = 'Sup3r$3cretkey'
+    #SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+    #UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', './uploads')

@@ -29,15 +29,118 @@
         <div class="uploadedphoto">
             {{ form.photo.label(class="label") }}
             {{ form.photo(class="control") }}
+            <label for="use_microphone">Use Microphone:</label>
+            {{ form.use_microphone() }}
+            <br>
+            <div id="audio-div" style="display: none;">
+                <button type="button" id="start-recording">Start Recording</button>
+                <button type="button" id="stop-recording" disabled>Stop Recording</button>
+                <button type="button" id="play-recording" disabled>Play Recording</button>
+            </div>
+            {{ form.audio.label(id="audio-data") }}
+            {{ form.audio(id="audio-file") }} 
+             
         </div>
 
         <button class="uploadbtn">Upload</button>
     </form>
 </div>
 
-  
 {% endblock %}
 
 {% block js %} 
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
-{% endblock%}
+
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+<script>
+    var startButton = document.getElementById('start-recording');
+    var stopButton = document.getElementById('stop-recording');
+    var playButton = document.getElementById('play-recording');
+    var audioDataInput = document.getElementById('audio-data');
+    var audioFileInput = document.getElementById('audio-file');
+
+    var mediaRecorder;
+    var recordedChunks = [];
+
+    function onMediaSuccess(stream) {
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = function (event) {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+
+        mediaRecorder.onstop = function () {
+            var blob = new Blob(recordedChunks, { type: 'audio/wav' });
+            recordedChunks = [];
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                audioDataInput.value = reader.result;
+            };
+            reader.readAsDataURL(blob);
+        };
+
+        startButton.disabled = false;
+    }
+
+    function onMediaError(err) {
+        console.error('Error accessing the microphone: ', err);
+        startButton.disabled = true;
+    }
+
+    function startRecording() {
+        recordedChunks = [];
+        mediaRecorder.start();
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        playButton.disabled = true;
+    }
+
+    function stopRecording() {
+        mediaRecorder.stop();
+        startButton.disabled = false;
+        stopButton.disabled = true;
+        playButton.disabled = false;
+    }
+
+    function playRecording() {
+        var audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+        var audioUrl = URL.createObjectURL(audioBlob);
+        var audioElement = new Audio(audioUrl);
+        audioElement.play();
+    }
+
+    function handleAudioFileChange(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                audioDataInput.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    startButton.onclick = startRecording;
+    stopButton.onclick = stopRecording;
+    playButton.onclick = playRecording;
+
+    audioFileInput.addEventListener('change', handleAudioFileChange);
+
+    document.getElementById('use_microphone').addEventListener('change', function () {
+        var audioDiv = document.getElementById('audio-div');
+        if (this.checked) {
+            audioDiv.style.display = 'block';
+            audioFileInput.style.display = 'none';
+        } else {
+            audioDiv.style.display = 'none';
+            audioFileInput.style.display = 'block';
+            audioDataInput.value = ''; // Clear the audio data when not using the microphone
+        }
+    });
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(onMediaSuccess)
+        .catch(onMediaError);
+</script>
+{% endblock%}

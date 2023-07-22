@@ -1,14 +1,13 @@
 import os
-from app import app, db
+from app import app
 from flask import render_template, request, redirect, url_for, flash
 from app.speech import *
 from werkzeug.utils import secure_filename
-from werkzeug.security import check_password_hash
-from app.forms import UserForm, LoginForm, PhotoForm
-from app.models import User, Photo, VoiceCommand, Designs, ExtendScriptFile
-from flask_wtf.csrf import generate_csrf
+from app.forms import PhotoForm
+import speech_recognition as sr
 
 
+ 
 @app.route('/')
 def index():
     """Render website's home page."""
@@ -44,23 +43,40 @@ def scripts():
     """Render website's upload page."""
     return render_template('scripts.html')
 
-
-@app.route('/uploadphoto', methods=['POST', 'GET'])
+@app.route('/uploadphoto',methods=['POST','GET'])
 def uploadphoto():
     """Render website's upload page."""
     photoform = PhotoForm()
+    recognizer = sr.Recognizer()
+    
+    if photoform.validate_on_submit():
+        
+        photo = photoform.photo.data # we could also use request.files['photo']
+        audio = photoform.audio.data      
 
-    if request.method == 'POST':
-        if photoform.validate_on_submit():
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        print(filename)
+    
+          
+        filenameAudio = secure_filename(audio.filename)
+        print(filenameAudio)
+        #audio.save(os.path.join(app.config['UPLOAD_FOLDER'], filenameAudio))
+        
+        
+        with sr.AudioFile(audio) as source:
+            ar = recognizer.record(source)
+        try:
+            text = recognizer.recognize_google(ar)
+            print("text:")
+            print(text)
+            reply = get_openai_response("Convert to ExtendScript"+text)
+            print("GPT-3 says:", reply)
+        except Exception as e:
+            print("Unknown error has occurred", e)
+         
 
-            photo = photoform.photo.data 
-            filename = secure_filename(photo.filename)
-            photo.save(os.path.join(
-                app.config['UPLOAD_FOLDER'], filename
-            ))
-    return render_template('upload.html', form=photoform)
-
-   
+    return render_template('upload.html',form=photoform)
 
 @app.route('/command')
 def command():
@@ -75,6 +91,9 @@ def commit():
 # Route to handle user speech input from microphone
 @app.route('/process_microphone', methods=['POST'])
 def process_microphone():
+
+    audio_data = request.files['audio_data'] 
+    recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source)
@@ -82,10 +101,10 @@ def process_microphone():
     try:
         text = recognizer.recognize_google(audio)
         print("You said:", text)
-        reply = get_openai_response(text)
-        print("GPT-3 says:", reply)
-        speak_response(reply)
-        return reply
+       # reply = get_openai_response(text)
+        ##print("GPT-3 says:", reply)
+        #speak_response(reply)
+        return text
     except sr.UnknownValueError:
         return "Speech recognition could not understand audio. Please try again."
     except sr.RequestError as e:
