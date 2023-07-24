@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators, PasswordField
+from wtforms import StringField, validators, PasswordField, BooleanField
 from wtforms.validators import InputRequired
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
@@ -23,4 +23,8 @@ class PhotoForm(FlaskForm):
     photo = FileField('Photo', validators=[
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
+    ])
+    use_microphone = BooleanField('Use Microphone', default=False)
+    audio = FileField('Audio Recording', validators=[
+        FileAllowed(['wav', 'flac'], 'Audio files only!')
     ])

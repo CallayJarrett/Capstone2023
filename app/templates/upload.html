@@ -1,43 +1,197 @@
 {% extends "base.html" %}
 
-{% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
-{% endblock %}
-
 {% block main %}
-
-<!--Shortcut Commands-->
 <div class="Shortcuts">
-    <div>
-        <p id="shortcutpara">Shortcuts</p>
+    <h2>Shortcuts</h2>
+    <div id="shortcutButtons" class="d-flex justify-content-between">
+      <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Crop allows you to trim or cut unwanted parts of an image, focusing on the desired area." disabled>Crop</button>
+      <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Resize lets you adjust the dimensions of an image, making it larger or smaller." disabled>Resize</button>
+      <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Blur is used to soften or obscure parts of the image, creating a subtle, out-of-focus effect." disabled>Blur</button>
+      <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Opacity controls the transparency of an image, making it more or less see-through." disabled>Opacity</button>
+      <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Hue changes the overall color of the image, shifting it along the color spectrum." disabled>Hue</button>
+      <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Saturation adjusts the intensity of colors in an image, making them more or less vibrant." disabled>Saturation</button>
     </div>
-    <div >
-        <button class="editbtns">Crop</button> 
-        <button class="editbtns">Resize</button> 
-        <button class="editbtns">Blur</button>
-        <button class="editbtns">Opacity</button>
-        <button class="editbtns">Hue</button>
-        <button class="editbtns">Saturation</button>
-    </div>
-</div>
+  </div>
 
-<!--Edit Plus Btn-->
-<div class="uploadpage">
-    <h2>Upload your Photo</h2>
-    <form action="{{ url_for('uploadphoto') }}" method="post" enctype="multipart/form-data">
-        {{ form.csrf_token }}
-        <div class="uploadedphoto">
-            {{ form.photo.label(class="label") }}
-            {{ form.photo(class="control") }}
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-6">
+            <div class="uploadpage">
+                <h3>Upload your Photo</h3>
+                <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="form-group">
+                        <label for="photo" class="form-label">Choose Photo:</label>
+                        <div class="file-drop">
+                            {% if selected_image %}
+                                <input type="hidden" name="selected_image" value="{{ selected_image }}"> <!-- Add selected image URL as hidden input -->
+                                <img src="{{ selected_image }}" class="selected-image-preview" alt="Selected Image"> <!-- Display the selected image as a preview -->
+                            {% endif %}
+                            <input type="file" name="photo" id="photo" class="form-control-file" style="display: none;">
+                            <div class="drop-area" id="dropArea">
+                                <p>Drag and drop your photo here or click to select</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        {{ form.audio.label(class="form-label", id="audio-data") }}
+                        {{ form.audio(id="audio-file", class="form-control-file") }} 
+                    </div>
+
+                    <div class="form-group form-check">
+                        {{ form.use_microphone(class="form-check-input") }}
+                        <label class="form-check-label" for="use_microphone">Use Microphone</label>
+                    </div>
+
+                    <div id="audio-div" style="display: none;">
+                        <button type="button" id="start-recording" class="btn btn-primary">Start Recording</button>
+                        <button type="button" id="stop-recording" class="btn btn-secondary" disabled>Stop Recording</button>
+                        <button type="button" id="play-recording" class="btn btn-success" disabled>Play Recording</button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
         </div>
-
-        <button class="uploadbtn">Upload</button>
-    </form>
+    </div>
 </div>
 
-  
+
+
 {% endblock %}
 
 {% block js %} 
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
-{% endblock%}
+
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+<script>
+    var startButton = document.getElementById('start-recording');
+    var stopButton = document.getElementById('stop-recording');
+    var playButton = document.getElementById('play-recording');
+    var audioDataInput = document.getElementById('audio-data');
+    var audioFileInput = document.getElementById('audio-file');
+
+    var mediaRecorder;
+    var recordedChunks = [];
+
+    function onMediaSuccess(stream) {
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = function (event) {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+
+        mediaRecorder.onstop = function () {
+            var blob = new Blob(recordedChunks, { type: 'audio/wav' });
+            recordedChunks = [];
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                audioDataInput.value = reader.result;
+            };
+            reader.readAsDataURL(blob);
+        };
+
+        startButton.disabled = false;
+    }
+
+    function onMediaError(err) {
+        console.error('Error accessing the microphone: ', err);
+        startButton.disabled = true;
+    }
+
+    function startRecording() {
+        recordedChunks = [];
+        mediaRecorder.start();
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        playButton.disabled = true;
+    }
+
+    function stopRecording() {
+        mediaRecorder.stop();
+        startButton.disabled = false;
+        stopButton.disabled = true;
+        playButton.disabled = false;
+    }
+
+    function playRecording() {
+        var audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+        var audioUrl = URL.createObjectURL(audioBlob);
+        var audioElement = new Audio(audioUrl);
+        audioElement.play();
+    }
+
+    function handleAudioFileChange(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                audioDataInput.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    startButton.onclick = startRecording;
+    stopButton.onclick = stopRecording;
+    playButton.onclick = playRecording;
+
+    audioFileInput.addEventListener('change', handleAudioFileChange);
+
+    document.getElementById('use_microphone').addEventListener('change', function () {
+        var audioDiv = document.getElementById('audio-div');
+        if (this.checked) {
+            audioDiv.style.display = 'block';
+            audioFileInput.style.display = 'none';
+        } else {
+            audioDiv.style.display = 'none';
+            audioFileInput.style.display = 'block';
+            audioDataInput.value = ''; // Clear the audio data when not using the microphone
+        }
+    });
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(onMediaSuccess)
+        .catch(onMediaError);
+
+        
+    document.addEventListener('DOMContentLoaded', function() {
+    const dropArea = document.getElementById('dropArea');
+
+    // Handle drag and drop events
+    dropArea.addEventListener('dragenter', function(event) {
+        event.preventDefault();
+        dropArea.classList.add('highlight');
+    });
+
+    dropArea.addEventListener('dragover', function(event) {
+        event.preventDefault();
+        dropArea.classList.add('highlight');
+    });
+
+    dropArea.addEventListener('dragleave', function(event) {
+        event.preventDefault();
+        dropArea.classList.remove('highlight');
+    });
+
+    dropArea.addEventListener('drop', function(event) {
+        event.preventDefault();
+        dropArea.classList.remove('highlight');
+
+        const file = event.dataTransfer.files[0];
+        const inputFile = document.getElementById('photo');
+        inputFile.files = event.dataTransfer.files;
+    });
+
+    // Handle click to open file dialog
+    dropArea.addEventListener('click', function() {
+        const inputFile = document.getElementById('photo');
+        inputFile.click();
+    });
+});
+
+
+</script>
+{% endblock%}

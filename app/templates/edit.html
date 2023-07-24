@@ -1,12 +1,135 @@
 {% extends "base.html" %}
 
-{% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+{% block main %}
+<div class="Shortcuts">
+  <h2>Shortcuts</h2>
+  <div id="shortcutButtons" class="d-flex justify-content-between">
+    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Crop allows you to trim or cut unwanted parts of an image, focusing on the desired area." disabled>Crop</button>
+    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Resize lets you adjust the dimensions of an image, making it larger or smaller." disabled>Resize</button>
+    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Blur is used to soften or obscure parts of the image, creating a subtle, out-of-focus effect." disabled>Blur</button>
+    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Opacity controls the transparency of an image, making it more or less see-through." disabled>Opacity</button>
+    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Hue changes the overall color of the image, shifting it along the color spectrum." disabled>Hue</button>
+    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Saturation adjusts the intensity of colors in an image, making them more or less vibrant." disabled>Saturation</button>
+  </div>
+</div>
+
+<!-- Edit Library -->
+<!-- <div class="edit-btns">
+  <div class="edit-btns-inner">
+    <a href="{{ url_for('upload') }}">
+      <img src="{{ url_for('static', filename='images/edit-clipart.png') }}" alt="Button" width="150" height="150" id="editBtn" data-toggle="tooltip" data-placement="top" title="Edit Shortcuts">
+    </a>
+    <a href="{{ url_for('upload') }}" class="new-edit-btn">
+      <button class="btn btn-primary" id="newEdit">New Edit</button>
+    </a>
+    <button class="btn btn-secondary" id="editModeBtn">Edit Shortcuts</button>
+    <button class="btn btn-success" id="saveChangesBtn" style="display: none;">Save Changes</button>
+  </div>
+</div> -->
+
+<!-- Edit Library -->
+<div class="ed-lib">
+  <h1 class="edit-title">Edit Library</h1>
+  <a href="{{ url_for('upload', selected_image=image_url) }}"> <!-- Add selected image URL as query parameter -->
+    <img src="{{ url_for('static', filename='images/plusbtn.jpg') }}" alt="Button" id="editBtn" data-toggle="tooltip" data-placement="top" title="New edit">
+  </a>
+</div>
+<div class="image-grid-container">
+  <div class="image-grid">
+    {% for image_url in image_urls %}
+      <div class="col-md-4">
+        <a href="{{ url_for('upload', selected_image=image_url) }}">
+          <!-- Add selected image URL as a query parameter -->
+          <img src="{{ image_url }}" class="img-fluid" alt="Image" />
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}
 
-{% block main %}
 
-<!--Shortcut Commands-->
+{% block js %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // ...
+  
+      // Handle click to open file dialog
+      dropArea.addEventListener('click', function() {
+          const inputFile = document.getElementById('photo');
+          inputFile.click();
+      });
+  
+      // Handle image click to navigate to uploads page
+      const editBtn = document.getElementById('editBtn');
+      editBtn.addEventListener('click', function() {
+          window.location.href = "{{ url_for('upload') }}";
+      });
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+  // Initialize tooltips
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+
+  // Add animation for tiles
+  const tiles = document.querySelectorAll('.upload-tile');
+  tiles.forEach(tile => {
+    tile.addEventListener('mouseenter', () => {
+      tile.style.transform = 'scale(1.1)';
+    });
+
+    tile.addEventListener('mouseleave', () => {
+      tile.style.transform = 'scale(1)';
+    });
+  });
+});
+
+document.querySelectorAll('.img-fluid').forEach(image => {
+    image.addEventListener('click', () => {
+      const selectedImageURL = image.src;
+      window.location.href = `{{ url_for('upload') }}?selected_image=${encodeURIComponent(selectedImageURL)}`;
+    });
+  });
+
+</script>
+
+{% endblock %}
+
+<!-- {% block scripts %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const shortcutButtons = document.getElementById("shortcutButtons");
+      const editModeBtn = document.getElementById("editModeBtn");
+      const saveChangesBtn = document.getElementById("saveChangesBtn");
+      
+      // Function to toggle edit mode
+      function toggleEditMode() {
+        const buttons = shortcutButtons.querySelectorAll("button");
+
+        buttons.forEach(button => {
+          button.disabled = !button.disabled;
+        });
+
+        editModeBtn.style.display = button.disabled ? "inline-block" : "none";
+        saveChangesBtn.style.display = button.disabled ? "none" : "inline-block";
+      }
+
+      // Add event listener to the "Edit Shortcuts" button to toggle edit mode
+      editModeBtn.addEventListener("click", toggleEditMode);
+
+      // Add event listener to the "Save Changes" button to save the changes and exit edit mode
+      saveChangesBtn.addEventListener("click", () => {
+        toggleEditMode();
+        // You can add additional logic here to save the changes to the server if necessary
+      });
+    });
+  </script>
+{% endblock %} -->
+
+<!-- Shortcut Commands
 <div class="Shortcuts">
     <div>
         <p id="shortcutpara">Shortcuts</p>
@@ -21,15 +144,8 @@
     </div>
 </div>
 
-<!--Edit Plus Btn-->
+Edit Plus Btn
 <div class="editpage">
     <img src="{{ url_for('static', filename='images/plusbtn.jpg') }}" alt="Button" id="plusbtn" width="150" height="150">
     <a href="{{ url_for('uploadphoto') }}"><button id="newEdit">New Edit</button></a>
-</div>
-
-  
-{% endblock %}
-
-{% block js %} 
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
-{% endblock%}
+</div> -->

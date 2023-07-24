@@ -1,123 +1,181 @@
+/* General styling */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     font-size: 14px;
     line-height: 1.5;
     background-color: white;
   }
- 
-  /*header code*/
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-  }
-  
-  .nav-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .nav-container img {
-    float: left;
-    margin-right: 10px;
-    padding-right: 80px;
-  }
-  
-  #navbarcontent {
-    float: right;
-  }
-  
-  .navbar-nav {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .navbar-nav .nav-item {
-    display: inline-block;
-    margin-right: 10px;
-    
-  }
-  
-  .navbar-nav .nav-link {
-    text-decoration: none;
-    color: black;
-    font-size: 15pt;
-    padding-left: 20px;
-    padding-top: 1000px;
-  }
 
-  
-
- /* .homepage {
-    display: block;
-    text-align: center;
-    padding: 10%;
-  }*/
-
-  /*footer code*/
-  .foot{
-    padding-top: 6%;
-    text-align: center;
-  }
-
-  h1{
-    color: #e0c3ae;
-    font-family: 'Caveat', cursive;
-  }
-
-
-.logo{
-  padding-left: 50px;
+/* HEADER */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  font-weight: bold;
 }
 
-.profile{
-  border:none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  margin: 0 auto;
-  background-color: #FFCA3A;
-  width:200px;
-  font-size: 20px;
-  float:right;
-  align-items: end;
+.nav-container {
+  display: flex;
+  align-items: center;
 }
 
-#lib{
-  padding-right: 550px;
+.nav-container img {
+  margin-right: 10px; /* Remove float and padding-right */
 }
 
-.profile a {
+#navbarcontent {
+  float: right; /* Remove float */
+}
+
+.navbar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex; /* Display the navbar links horizontally */
+  align-items: center; /* Center the links vertically */
+}
+
+.navbar-nav .nav-item {
+  margin-right: 10px;
+}
+
+.navbar-nav .nav-link {
   text-decoration: none;
-  color: black;
+  color: blue;
+  font-size: 13pt;
 }
 
+.navbar-nav .nav-link:hover {
+  border-bottom: 3px solid #FFCA3A;
+}
 
+/* REGISTER/LOGIN pages */
 
-/*index.html code*/
+.left, .right {
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+.left {
+  margin-right: 0;
+}
+
+.right {
+  padding: 20px 35px;
+  margin-left: 0;
+  background-color: white;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: 1px solid #bbbab8;
+  /* box-shadow: 0px 4px 10px 2px #bbbab8; */
+} 
+
+.form-label {
+  margin-top: 1rem;
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.form-control {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.3rem;
+  border: 1px solid #ccc;
+  padding-left: 0.9rem;
+}
+
+.lr-vid {
+  height: 500px;
+  width: 500px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border: 1px solid #bbbab8;
+  /* box-shadow: 0px 4px 10px 2px #bbbab8; */
+}
+
+.lr-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 6%;
+  /* border: 1px solid black; */
+}
+
+.lr-container h3 {
+  font-weight: bold;
+  text-align: center;
+}
+
+.lr-container p {
+  margin-top: 5%;
+}
+
+.input-group .input-group-text {
+  display: flex;
+  align-items: center;
+  width: 40px;
+  height: 85%;
+  margin-right: 10px;
+  margin-top: 7px;
+}
+
+.register-form, .login-form {
+  margin-top: 4%;
+}
+
+.login-intro {
+  text-align: center;
+  font-weight: lighter;
+  font-size: 15px;
+  margin-bottom: 25px;
+}
+
+.login-heading {
+  margin-top: 4%;
+}
+
+/* INDEX/HOMEPAGE */
 
 #start-editing-btn {
-  border:none;
-  border-radius: 5px;
+  border: 1px black;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 50px;
   padding: 10px 20px;
-  display: block;
-  margin: 0 auto;
+  /* display: block; */
+  margin: 25px 100px;
   background-color: #FFCA3A;
   width:200px;
-  font-size: 20px;
+  font-size: 18px;
   text-decoration: none;
+  font-weight: bold;
 }
 
 .homepage {
   display: flex;
   align-items: center;
   flex-direction: row;
-  font-family: Gelion, "Open Sans", Helvetica, "Helvetica Neue", Arial;
+  margin-top: 5%;
+  /* font-family: Gelion, "Open Sans", Helvetica, "Helvetica Neue", Arial; */
+}
+
+.homepage h2 {
+  font-weight: bold;
 }
 
 .text {
-  font-weight: bold;
+  /* font-weight: bold; */
+  margin-top: 7%;
+  font-size: 15px;
+}
+
+.intro {
+  font-size: 25px;
 }
 
 .left-div {
@@ -127,69 +185,205 @@ body {
 
 .right-div {
   flex: 1;
+  margin-left: 3%;
 }
 
 .video-element {
   width: 600px;
-  height: 400px;
+  height:400px;
 }
 
-h2{
+h2 {
   font-size: 45pt;
 }
 
-/*edit.html css*/
+/* Shortcuts bar */
 
-.editpage{
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  font-family: Gelion, "Open Sans", Helvetica, "Helvetica Neue", Arial;
+.Shortcuts h2 {
+  text-align: center;
+  font-weight: bold;
 }
 
-#plusbtn {
-  padding-top: 100px;
+.Shortcuts {
+  /* background-color: rgb(190, 187, 187); */
+  border: 1px rgb(190, 187, 187);
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  border-radius: 30px;
+  padding: 2rem;
+  display: grid;
+  gap: 1rem;
+  margin-top: 5%;
 }
 
-#newEdit{
-  border:none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  display: block;
-  margin-bottom: 100px;
-  background-color: #FFCA3A;
-  width:200px;
-  font-size: 20px;
-  
+#shortcutButtons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
 }
 
-.Shortcuts{
-  background-color: black;
-  border-radius: 30px 30px 30px 30px;
-  display: flex;
-  
-  align-items: center;
-  flex-direction: column;
-  width: 1200px;
-  height: 400px;
-  margin-left: 50px;
-}
-
-.editbtns {
-  border:none;
+.shortcut-btns {
+  border: none;
   border-radius: 5px;
   padding: 10px 20px;
   align-items: center;
   margin: 0 auto;
-  background-color: #FFCA3A;
-  width:120px;
+  background-color: #e3c36b;
+  width: 140px;
   font-size: 20px;
-  
+  color: black;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-#shortcutpara{
-  color: white;
-  font-size: 100px;
+.shortcut-btns:hover {
+  background-color: #f7ca3a;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+
+/* EDIT page */
+
+#editBtn {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-top: 30px;
+}
+
+#editBtn:hover {
+  transform: scale(1.1);
+}
+
+.edit-title {
+  font-weight: bold;
+}
+
+.ed-lib {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5%;
+}
+
+/* .edit-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.edit-btns-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.edit-btns img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.edit-btns img:hover {
+  transform: scale(1.1);
+}
+
+.new-edit-btn {
+  margin-top: 15px;
+}
+
+.btn {
+  margin-top: 10px;
+  margin-right: 10px;
+} */
+
+.image-grid-container {
+  max-width: 80%;
+  margin: 0 auto;
+  margin-top: 5%;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+.image-grid-item {
+  margin: 0;
+  padding: 0;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
+.image-grid-item img {
+  width: 350px;
+  height: 300px;
+}
+
+/* Add styles for the tiles with previous uploads */
+.upload-tile {
+  width: 200px;
+  height: 200px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Add hover effect for the tiles */
+.upload-tile:hover {
+  background-color: #ddd;
+}
+
+/* Add styles for the empty slot */
+.empty-slot {
+  width: 200px;
+  height: 200px;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #ccc;
+}
+
+/* LIBRARY */
+
+/* Upload page */
+
+.uploadpage h3 {
+  text-align: center;
+  margin-top: 5%;
+  font-weight: bold;
+}
+
+/* Styles for the drag and drop area */
+.drop-area {
+  border: 2px dashed #bbb;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.drop-area p {
+  margin: 0;
+}
+
+.drop-area.highlight {
+  background-color: #f0f0f0;
+}
+
+/* Hide the default file input appearance */
+.file-drop input[type="file"] {
+  display: none;
 }
 
 /* CSS to style the librarysection div */
@@ -229,4 +423,40 @@ h2{
 .librarysection > div:hover {
   background-color: #f0f0f0; /* Change the background color on hover */
   transform: scale(1.1); /* Scale the div up on hover */
+}
+
+/* FOOTER */
+.foot{
+  padding-top: 6%;
+  text-align: center;
+}
+
+/* h1{
+  color: #e0c3ae;
+  font-family: 'Caveat', cursive;
+} */
+
+.logo{
+  padding-left: 50px;
+}
+
+.profile{
+  border:none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin: 0 auto;
+  background-color: #FFCA3A;
+  width:200px;
+  font-size: 20px;
+  float:right;
+  align-items: end;
+}
+
+#lib{
+  padding-right: 550px;
+}
+
+.profile a {
+  text-decoration: none;
+  color: black;
 }

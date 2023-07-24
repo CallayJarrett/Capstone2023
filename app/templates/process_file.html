@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+{% endblock %}
+
+{% block main %}
+ 
+<body>
+    <h1>Your Request has been Processed!</h1>
+    <p>{{ status | safe }}</p>
+</body>
+
+
+{% endblock %}

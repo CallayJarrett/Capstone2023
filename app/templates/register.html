@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="lr-container">
+    <div class="left">
+        <video class="lr-vid" src="{{ url_for('static', filename='images/homepage.mp4') }}" autoplay muted loop></video>
+    </div>
+    <div class="right">
+        <!-- <div class="logo">
+            <img src="logo.png" alt="Photogram Logo">
+        </div> -->
+        <h3>Register</h3>
+        <div class="register-form">
+            <form action="{{ url_for('register') }}" method="post">
+                {% include 'flash_messages.html' %}
+
+                <!-- Username input with icon -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    </div>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Username">
+                </div>
+
+                <!-- Password input with icon -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    </div>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+                </div>
+
+                <!-- First Name input with icon -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                    </div>
+                    <input type="text" name="firstname" id="firstname" class="form-control" placeholder="First Name">
+                </div>
+
+                <!-- Last Name input with icon -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                    </div>
+                    <input type="text" name="lastname" id="lastname" class="form-control" placeholder="Last Name">
+                </div>
+
+                <!-- Profile Photo file input with icon -->
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-file-image"></i></span>
+                    </div>
+                    <input type="file" name="profile_photo" id="profile_photo" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-lg btn-primary w-100 mt-4">Register</button>
+                <p>Already have an account? <a href="/login">Sign in</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- <div class="form-container">
+    <form action="{{ url_for('register') }}" method="post" class="form-login m-auto">
+        <h2>Register</h2>
+        {% include 'flash_messages.html' %}
+        <label for="username" class="form-label">Username</label>
+        <input type="text" name="username" id="username" class="form-control" >
+    
+        <label for="password" class="form-label">Password</label>
+        <input type="password" name="password" id="password" class="form-control" >
+    
+        <label for="firstname" class="form-label">First Name</label>
+        <input type="text" name="firstname" id="firstname" class="form-control" >
+    
+        <label for="lastname" class="form-label">Last Name</label>
+        <input type="text" name="lastname" id="lastname" class="form-control" >
+    
+        <label for="profile_photo" class="form-label">Profile Photo</label>
+        <input type="file" name="profile_photo" id="profile_photo" class="form-control" >
+    
+        <button type="submit" class="btn btn-lg btn-primary w-100 mt-5">Register</button>
+    </form>
+</div> -->
+{% endblock %}

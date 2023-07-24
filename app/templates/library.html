@@ -8,7 +8,7 @@
 <div class="librarysection">
     <div>
         <h3>Uploads</h3>
-        <a href="{{ url_for('uploadphoto') }}">
+        <a href="{{ url_for('upload') }}">
             <img src="{{ url_for('static', filename='images/upload.png') }}" alt="Uploadimg" class="librarybtn" width="150" height="150">
         </a>
     </div>
@@ -33,9 +33,9 @@
 </div>
 {% endblock %}
 
-{% block js %} 
+<!-- {% block js %} 
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-<!-- anime.js library -->
+anime.js library
 <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
-{% endblock %}
+{% endblock %} -->
