@@ -5,10 +5,10 @@ from werkzeug.security import generate_password_hash
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     firstname = db.Column(db.String)
     lastname = db.Column(db.String)
-    profile_photo = db.Column(db.String)
+    profile_photo = db.Column(db.String(255))
 
     def is_authenticated(self):
         return True
@@ -69,6 +69,10 @@ class Designs(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     design_file_path = db.Column(db.String(200), nullable=False)
 
+    @staticmethod
+    def get_all_designs():
+        return Designs.query.all()
+    
     def __init__(self, id, user_id, design_file_path):
         self.id = id
         self.user_id = user_id
@@ -77,11 +81,15 @@ class Designs(db.Model):
     def __repr__(self):
         return f'<Designs %r {self.id}>'
 
-# ExtendScript file model
-class ExtendScriptFile(db.Model):
+# ExtendScript files model
+class ExtendScripts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     script_file_path = db.Column(db.String(200), nullable=False)
+
+    @staticmethod
+    def get_all_scripts():
+        return ExtendScripts.query.all()
 
     def __init__(self, id, user_id, script_file_path):
         self.id = id
@@ -89,4 +97,4 @@ class ExtendScriptFile(db.Model):
         self.script_file_path = script_file_path
     
     def __repr__(self):
-        return f'<ExtendScriptFile %r {self.id}>'
+        return f'<ExtendScripts %r {self.id}>'

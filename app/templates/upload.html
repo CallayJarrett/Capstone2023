@@ -11,13 +11,14 @@
       <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Hue changes the overall color of the image, shifting it along the color spectrum." disabled>Hue</button>
       <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Saturation adjusts the intensity of colors in an image, making them more or less vibrant." disabled>Saturation</button>
     </div>
-  </div>
+</div>
 
 <div class="container">
     <div class="row justify-content-center align-items-center">
         <div class="col-md-6">
             <div class="uploadpage">
                 <h3>Upload your Photo</h3>
+                {% include 'flash_messages.html' %}
                 <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="form-group">
@@ -56,14 +57,9 @@
         </div>
     </div>
 </div>
-
-
-
 {% endblock %}
 
 {% block js %} 
-
-<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
 <script>
     var startButton = document.getElementById('start-recording');
     var stopButton = document.getElementById('stop-recording');
@@ -192,6 +188,35 @@
     });
 });
 
+// Display selected image in the drop area
+// document.getElementById('photo').addEventListener('change', function(event) {
+//     const file = event.target.files[0];
+//     const dropArea = document.getElementById('dropArea');
+    
+//     if (file) {
+//       const reader = new FileReader();
+//       reader.onload = function(e) {
+//         dropArea.innerHTML = ''; // Clear the previous content
+//         const imageElement = document.createElement('img');
+//         imageElement.src = e.target.result;
+//         imageElement.classList.add('img-fluid');
+//         dropArea.appendChild(imageElement);
+//       };
+//       reader.readAsDataURL(file);
+//     } else {
+//       dropArea.innerHTML = '<p>Drag and drop your photo here or click to select</p>'; // Show default text
+//     }
+//   });
 
+document.getElementById('photo').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const dropArea = document.getElementById('dropArea');
+    
+    if (file) {
+      dropArea.innerHTML = `<p>Selected Image Path: ${file.name}</p>`;
+    } else {
+      dropArea.innerHTML = '<p>Drag and drop your photo here or click to select</p>'; // Show default text
+    }
+  });
 </script>
 {% endblock%}

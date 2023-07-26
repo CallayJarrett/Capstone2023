@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block main %}
+  <h1>Designs</h1>
+  <ul>
+    {% for design in designs %}
+      <li>{{ design.design_file_path }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

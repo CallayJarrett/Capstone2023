@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block main %}
+  <h1>Scripts</h1>
+  <ul>
+    {% for script in scripts %}
+      <li>{{ script.script_file_path }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

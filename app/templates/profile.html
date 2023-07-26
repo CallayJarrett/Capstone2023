@@ -1,17 +1,56 @@
-{% extends "base.html" %}
-
-{% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
-{% endblock %}
+{% extends 'base.html' %}
 
 {% block main %}
-<div class="editpage">
-    <img src="{{ url_for('static', filename='images/plusbtn.jpg') }}" alt="Button" id="plusbtn" width="60" height="60">
-    <p class="lead">New Edit.</p>
+<h1 class="p-heading">Your Profile</h1>
+<div class="container mt-4" id="p-container">
+  <div class="row">
+    <!-- Display user's profile photo -->
+    <div class="col-md-3">
+        <img src="{{ url_for('get_image', filename=current_user.profile_photo) }}" alt="Profile Photo" class="photo-display">
+    </div>
+    <!-- User info -->
+    <div class="col-md-8">
+      <h2 class="card-title hello-title" id="welcome-title">HELLO</h2>
+      <h2 class="p-name">{{ current_user.firstname }} {{ current_user.lastname }}</h2>
+      <p class="p-username">@{{ current_user.username }}</p>
+      <p>Image Alchemists consist of four third year computing students at the UWI. Our project, the Voice Controlled Editor, aims to bridge the gap between the world of technology and design. This is our attempt at doing just that.  </p>
+    </div>
+  </div>
 </div>
-  
+
+<!-- User Designs Section -->
+<div>
+    <h2 class="pd-title">Created Designs</h2>
+    <div class="row">
+        {% for design in current_user.designs %}
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ url_for('get_image', filename=design.design_file_path) }}" alt="Design" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">Design {{ design.id }}</h5>
+                        <!-- Add more information about the design if needed -->
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+</div>
 {% endblock %}
 
-{% block js %} 
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
-{% endblock%}
+{% block js %}
+    <script>
+        // Animate the title using JavaScript
+        window.onload = function() {
+            const welcomeTitle = document.getElementById('welcome-title');
+            welcomeTitle.style.transform = 'scale(1.2)';
+            welcomeTitle.style.transition = 'transform 0.5s ease-in-out';
+
+            // Add a delay and then apply zoom-out effect
+            setTimeout(function() {
+                welcomeTitle.style.transform = 'scale(1)';
+            }, 500);
+        };
+    </script>
+{% endblock %}
