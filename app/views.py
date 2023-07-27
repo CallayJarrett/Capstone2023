@@ -18,7 +18,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/edit')
-# @login_required
+@login_required
 def edit():
     # Call the get_uploaded_images function to get a list of filenames
     filenames = get_uploaded_images()
@@ -30,37 +30,37 @@ def edit():
     return render_template('edit.html', image_urls=image_urls)
 
 @app.route('/library')
-# @login_required
+@login_required
 def library():
     """Render website's library page."""
     return render_template('library.html')
 
 @app.route('/profile')
-# @login_required
+@login_required
 def profile():
     """Render website's profile page."""
     return render_template('profile.html')
 
 @app.route('/voicecommands')
-# @login_required
+@login_required
 def voicecommands():
     """Render website's upload page."""
     return render_template('voicecommands.html')
 
 @app.route('/designs')
-# @login_required
+@login_required
 def designs():
     """Render website's upload page."""
     return render_template('designs.html')
 
 @app.route('/scripts')
-# @login_required
+@login_required
 def scripts():
     scripts = ExtendScripts.get_all_scripts()
     return render_template('scripts.html', scripts=scripts)
 
 # Set OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
 
 # Function to transcribe audio
 def transcribe_audio(filename):
@@ -86,7 +86,7 @@ def get_openai_response(prompt):
     return response.choices[0].text.strip()
 
 @app.route('/upload', methods=['POST', 'GET'])
-# @login_required
+@login_required
 def upload():
     photoform = PhotoForm() 
 
@@ -200,7 +200,7 @@ def login():
 
         if user is not None and check_password_hash(user.password, password):
             login_user(user)
-            flash('Logged in successfully', 'success')
+            # flash('Logged in successfully', 'success')
             return redirect(url_for('index'))
         else:
             flash('Invalid username or password', 'danger')
@@ -213,7 +213,7 @@ def login():
 def logout():
     logout_user()
     flash('You have been logged out.', 'success')
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 @login_manager.user_loader
 def load_user(id):

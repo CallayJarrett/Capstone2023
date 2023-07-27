@@ -14,20 +14,6 @@
 </div>
 
 <!-- Edit Library -->
-<!-- <div class="edit-btns">
-  <div class="edit-btns-inner">
-    <a href="{{ url_for('upload') }}">
-      <img src="{{ url_for('static', filename='images/edit-clipart.png') }}" alt="Button" width="150" height="150" id="editBtn" data-toggle="tooltip" data-placement="top" title="Edit Shortcuts">
-    </a>
-    <a href="{{ url_for('upload') }}" class="new-edit-btn">
-      <button class="btn btn-primary" id="newEdit">New Edit</button>
-    </a>
-    <button class="btn btn-secondary" id="editModeBtn">Edit Shortcuts</button>
-    <button class="btn btn-success" id="saveChangesBtn" style="display: none;">Save Changes</button>
-  </div>
-</div> -->
-
-<!-- Edit Library -->
 <div class="ed-lib">
   <h1 class="edit-title">Edit Library</h1>
   <a href="{{ url_for('upload', selected_image=image_url) }}"> <!-- Add selected image URL as query parameter -->
@@ -37,7 +23,7 @@
 <div class="image-grid-container">
   <div class="image-grid">
     {% for image_url in image_urls %}
-      <div class="col-md-4">
+      <div class="image-grid-item">
         <a href="{{ url_for('upload', selected_image=image_url) }}">
           <!-- Add selected image URL as a query parameter -->
           <img src="{{ image_url }}" class="img-fluid" alt="Image" />
