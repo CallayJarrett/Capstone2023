@@ -40,15 +40,10 @@
                         {{ form.audio(id="audio-file", class="form-control-file") }} 
                     </div>
 
-                    <div class="form-group form-check">
-                        {{ form.use_microphone(class="form-check-input") }}
-                        <label class="form-check-label" for="use_microphone">Use Microphone</label>
-                    </div>
-
-                    <div id="audio-div" style="display: none;">
-                        <button type="button" id="start-recording" class="btn btn-primary">Start Recording</button>
-                        <button type="button" id="stop-recording" class="btn btn-secondary" disabled>Stop Recording</button>
-                        <button type="button" id="play-recording" class="btn btn-success" disabled>Play Recording</button>
+                    <div>
+                        <img src="{{ url_for('static', filename='images/microphone.png') }}" alt="Microphone" id="microphone" width="60" height="60">
+                        <p id="text" class="text"></p>
+                        <p id="response" class="response"></p>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Upload</button>
@@ -61,98 +56,7 @@
 
 {% block js %} 
 <script>
-    var startButton = document.getElementById('start-recording');
-    var stopButton = document.getElementById('stop-recording');
-    var playButton = document.getElementById('play-recording');
-    var audioDataInput = document.getElementById('audio-data');
-    var audioFileInput = document.getElementById('audio-file');
-
-    var mediaRecorder;
-    var recordedChunks = [];
-
-    function onMediaSuccess(stream) {
-        mediaRecorder = new MediaRecorder(stream);
-
-        mediaRecorder.ondataavailable = function (event) {
-            if (event.data.size > 0) {
-                recordedChunks.push(event.data);
-            }
-        };
-
-        mediaRecorder.onstop = function () {
-            var blob = new Blob(recordedChunks, { type: 'audio/wav' });
-            recordedChunks = [];
-            var reader = new FileReader();
-            reader.onloadend = function () {
-                audioDataInput.value = reader.result;
-            };
-            reader.readAsDataURL(blob);
-        };
-
-        startButton.disabled = false;
-    }
-
-    function onMediaError(err) {
-        console.error('Error accessing the microphone: ', err);
-        startButton.disabled = true;
-    }
-
-    function startRecording() {
-        recordedChunks = [];
-        mediaRecorder.start();
-        startButton.disabled = true;
-        stopButton.disabled = false;
-        playButton.disabled = true;
-    }
-
-    function stopRecording() {
-        mediaRecorder.stop();
-        startButton.disabled = false;
-        stopButton.disabled = true;
-        playButton.disabled = false;
-    }
-
-    function playRecording() {
-        var audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
-        var audioUrl = URL.createObjectURL(audioBlob);
-        var audioElement = new Audio(audioUrl);
-        audioElement.play();
-    }
-
-    function handleAudioFileChange(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                audioDataInput.value = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    startButton.onclick = startRecording;
-    stopButton.onclick = stopRecording;
-    playButton.onclick = playRecording;
-
-    audioFileInput.addEventListener('change', handleAudioFileChange);
-
-    document.getElementById('use_microphone').addEventListener('change', function () {
-        var audioDiv = document.getElementById('audio-div');
-        if (this.checked) {
-            audioDiv.style.display = 'block';
-            audioFileInput.style.display = 'none';
-        } else {
-            audioDiv.style.display = 'none';
-            audioFileInput.style.display = 'block';
-            audioDataInput.value = ''; // Clear the audio data when not using the microphone
-        }
-    });
-
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(onMediaSuccess)
-        .catch(onMediaError);
-
-        
+    
     document.addEventListener('DOMContentLoaded', function() {
     const dropArea = document.getElementById('dropArea');
 

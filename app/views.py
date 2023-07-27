@@ -60,60 +60,118 @@ def scripts():
     return render_template('scripts.html', scripts=scripts)
 
 # Set OpenAI API key
-openai.api_key = "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"
+openai.api_key = "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"
+
+# Initialize text-to-speech engine
+engine = pyttsx3.init()
 
 # Function to transcribe audio
 def transcribe_audio(filename):
     recognizer = sr.Recognizer()
-    with sr.AudioFile(filename) as source:
-        audio = recognizer.record(source)
+    with sr.AudioFile(audio) as source:
+        ar = recognizer.record(source)
     try:
-        return recognizer.recognize_google(audio)
+        text = recognizer.recognize_google(ar)
+        print("text:")
+        print(text)
     except Exception as e:
-        print("Unknown error has occurred", e)
-        return None
+            print("Unknown error has occurred", e)
+    return text
 
 # Function to get OpenAI response
-def get_openai_response(prompt):
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=4000,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-    return response.choices[0].text.strip()
+# def get_openai_response(prompt):
+#     try:
+#         reply = get_openai_response("Convert to ExtendScript"+text)
+#         print("GPT-3 says:", reply)
+#         #return redirect(url_for("loading",photo=filename, text=text, reply=reply))
+#     except Exception as e:
+#         print("Unknown error has occurred", e)
+#     return reply
+
+def convert_to_text(audio):
+    recognizer = sr.Recognizer()
+    with sr.AudioFile(audio) as source:
+        ar = recognizer.record(source)
+    try:
+        text = recognizer.recognize_google(ar)
+        print("text:")
+        print(text)
+    except Exception as e:
+            print("Unknown error has occurred", e)
+    return text
+
+def generate_extendscript(text):
+    try:
+        reply = get_openai_response("Convert to ExtendScript"+text)
+        print("GPT-3 says:", reply)
+        #return redirect(url_for("loading",photo=filename, text=text, reply=reply))
+    except Exception as e:
+        print("Unknown error has occurred", e)
+    return reply
 
 @app.route('/upload', methods=['POST', 'GET'])
 @login_required
 def upload():
-    photoform = PhotoForm() 
+    photoform = PhotoForm()
+    
+    
+    if photoform.validate_on_submit():
+        
+        photo = photoform.photo.data # we could also use request.files['photo']
+        audio = photoform.audio.data      
 
-    if request.method == 'POST':
-        if photoform.validate_on_submit():
-            photo = request.files['photo']
-            audio = request.files['audio']
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        print(filename)
+    
+          
+        filenameAudio = secure_filename(audio.filename)
+        print(filenameAudio)
+        #audio.save(os.path.join(app.config['UPLOAD_FOLDER'], filenameAudio))
+        text = convert_to_text(audio)
+        print("this,",text)
 
-            if photo and audio:
-                filename_photo = secure_filename(photo.filename)
-                filename_audio = secure_filename(audio.filename)
-
-                photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_photo))
-                audio.save(os.path.join(app.config['UPLOAD_FOLDER'], filename_audio))
-
-                # Transcribe the audio and get the response from OpenAI
-                transcribed_text = transcribe_audio(os.path.join(app.config['UPLOAD_FOLDER'], filename_audio))
-                if transcribed_text:
-                    prompt = "Convert to ExtendScript" + transcribed_text
-                    reply = get_openai_response(prompt)
-                    print("GPT-3 says:", reply)
-                    # Do something with the reply
-
-                return redirect(url_for('upload'))
+        reply = generate_extendscript(text)
+        print(reply)
+        #return redirect(url_for("loading",photo=filename, text=text, reply=reply))
 
     return render_template('upload.html', form=photoform)
 
+# # Route to handle user speech input from microphone
+# @app.route('/process_microphone', methods=['POST'])
+# def process_microphone():
+#     with sr.Microphone() as source:
+#         recognizer.adjust_for_ambient_noise(source)
+#         audio = recognizer.listen(source)
+
+#     try:
+#         text = recognizer.recognize_google(audio)
+#         print("You said:", text)
+#         reply = get_openai_response(text)
+#         print("GPT-3 says:", reply)
+#         speak_response(reply)
+#         return reply
+#     except sr.UnknownValueError:
+#         return "Speech recognition could not understand audio. Please try again."
+#     except sr.RequestError as e:
+#         return "ERROR: {0}".format(e)
+
+# # Route to handle user speech input from uploaded file
+# @app.route('/process_file', methods=['POST'])
+# def process_file():
+#     audio_file = request.files['audio']
+#     audio_file.save('uploaded_audio.wav')
+
+#     try:
+#         text = transcribe_audio('uploaded_audio.wav')
+#         print("Transcribed text:", text)
+#         reply = get_openai_response(text)
+#         print("Response:", reply)
+#         speak_response(reply)
+#         return reply
+#     except Exception as e:
+#         return "An error occurred: {0}".format(e)
+    
 def get_uploaded_images():
     upload_dir = os.path.join(os.getcwd(), app.config['UPLOAD_FOLDER'])
     filenames = []

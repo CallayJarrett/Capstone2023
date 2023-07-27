@@ -24,7 +24,7 @@ class PhotoForm(FlaskForm):
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
-    use_microphone = BooleanField('Use Microphone', default=False)
+    # use_microphone = BooleanField('Use Microphone', default=False)
     audio = FileField('Audio Recording', validators=[
         FileAllowed(['wav', 'flac'], 'Audio files only!')
     ])
