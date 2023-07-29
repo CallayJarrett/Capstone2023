@@ -23,7 +23,7 @@
 <div class="image-grid-container">
   <div class="image-grid">
     {% for image_url in image_urls %}
-      <div class="image-grid-item">
+      <div class="image-grid-item upload-tile">
         <a href="{{ url_for('upload', selected_image=image_url) }}">
           <!-- Add selected image URL as a query parameter -->
           <img src="{{ image_url }}" class="img-fluid" alt="Image" />
@@ -38,8 +38,7 @@
 {% block js %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-      // ...
-  
+        
       // Handle click to open file dialog
       dropArea.addEventListener('click', function() {
           const inputFile = document.getElementById('photo');
@@ -82,36 +81,5 @@ document.querySelectorAll('.img-fluid').forEach(image => {
 </script>
 
 {% endblock %}
-
-<!-- {% block scripts %}
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const shortcutButtons = document.getElementById("shortcutButtons");
-      const editModeBtn = document.getElementById("editModeBtn");
-      const saveChangesBtn = document.getElementById("saveChangesBtn");
-      
-      // Function to toggle edit mode
-      function toggleEditMode() {
-        const buttons = shortcutButtons.querySelectorAll("button");
-
-        buttons.forEach(button => {
-          button.disabled = !button.disabled;
-        });
-
-        editModeBtn.style.display = button.disabled ? "inline-block" : "none";
-        saveChangesBtn.style.display = button.disabled ? "none" : "inline-block";
-      }
-
-      // Add event listener to the "Edit Shortcuts" button to toggle edit mode
-      editModeBtn.addEventListener("click", toggleEditMode);
-
-      // Add event listener to the "Save Changes" button to save the changes and exit edit mode
-      saveChangesBtn.addEventListener("click", () => {
-        toggleEditMode();
-        // You can add additional logic here to save the changes to the server if necessary
-      });
-    });
-  </script>
-{% endblock %} -->
 
 

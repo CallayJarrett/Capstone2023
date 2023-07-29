@@ -13,40 +13,65 @@
     </div>
 </div>
 
-<div class="container">
-    <div class="row justify-content-center align-items-center">
+<div class="upload-container">
+    <div class="row">
         <div class="col-md-6">
-            <div class="uploadpage">
-                <h3>Upload your Photo</h3>
-                {% include 'flash_messages.html' %}
+            <div class="upload-photo">
+                <h3>1. Select Image</h3>
+                <p class="upload-description">Upload an image from your computer (JPG, JPEG, PNG) or drag and drop it here.</p>
+                <div class="drop-area" id="dropArea">
+                    <img src="{{ url_for('static', filename='images/image-icon.png') }}" alt="Photo" id="photo-icon" width="60" height="60">
+                    <p>DRAG AND DROP YOUR PHOTO HERE</p>
+                </div>
                 <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="form-group">
-                        <label for="photo" class="form-label">Choose Photo:</label>
+                        <label for="photo" class="form-label" align="left">Photo:</label>
                         <div class="file-drop">
                             {% if selected_image %}
                                 <input type="hidden" name="selected_image" value="{{ selected_image }}"> <!-- Add selected image URL as hidden input -->
-                                <img src="{{ selected_image }}" class="selected-image-preview" alt="Selected Image"> <!-- Display the selected image as a preview -->
+                                <img src="{{ selected_image }}" class="selected-image-preview" alt="Selected Image" style="display: block; width: 400px; height: 300px;"> <!-- Display the selected image as a preview -->
+                                <p>Image Path: {{ selected_image }}</p>
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/placeholder.png') }}" class="selected-image-placeholder" alt="Placeholder" style="display: block; width: 400px; height: 300px;">
                             {% endif %}
                             <input type="file" name="photo" id="photo" class="form-control-file" style="display: none;">
-                            <div class="drop-area" id="dropArea">
-                                <p>Drag and drop your photo here or click to select</p>
-                            </div>
+                        </div>
+                    </div>                    
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="upload-audio">
+                <h3>2. Select Audio</h3>
+                <p class="upload-description">Upload an audio file from your computer (WAV) or use the microphone to record.</p>
+                <div class="drop-area" id="audioDropArea">
+                    <img src="{{ url_for('static', filename='images/audio-icon.png') }}" alt="Audio" id="audio-icon" width="60" height="60">
+                    <p>DRAG AND DROP YOUR AUDIO FILE HERE</p>
+                </div>
+                <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="form-group">
+                        <label for="audio-file" class="form-label">OR Record Your Audio:</label>
+                        <div class="file-drop">
+                            {% if selected_audio %}
+                                <input type="hidden" name="selected_audio" value="{{ selected_audio }}"> <!-- Add selected audio URL as hidden input -->
+                                <p>Audio Path: {{ selected_audio }}</p>
+                            {% endif %}
+                            {{ form.audio(id="audio-file", class="form-control-file") }} 
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        {{ form.audio.label(class="form-label", id="audio-data") }}
-                        {{ form.audio(id="audio-file", class="form-control-file") }} 
-                    </div>
-
-                    <div>
-                        <img src="{{ url_for('static', filename='images/microphone.png') }}" alt="Microphone" id="microphone" width="60" height="60">
+                    <div class="mic-div">
+                        <img src="{{ url_for('static', filename='images/mic-icon.png') }}" alt="Microphone" id="microphone" width="170" height="170" class="microphone-icon">
+                        <div class="sound-waves" id="soundWaves">
+                            <div class="wave"></div>
+                            <div class="wave"></div>
+                            <div class="wave"></div>
+                        </div>
                         <p id="text" class="text"></p>
                         <p id="response" class="response"></p>
+                        <button type="submit" class="btn btn-primary">UPLOAD</button>
                     </div>
-
-                    <button type="submit" class="btn btn-primary">Upload</button>
                 </form>
             </div>
         </div>
@@ -56,71 +81,132 @@
 
 {% block js %} 
 <script>
-    
     document.addEventListener('DOMContentLoaded', function() {
-    const dropArea = document.getElementById('dropArea');
+        const dropArea = document.getElementById('dropArea');
+        const audioDropArea = document.getElementById('audioDropArea');
+        const selectedImagePreview = document.querySelector('.selected-image-preview');
+        const selectedImagePlaceholder = document.querySelector('.selected-image-placeholder');
 
-    // Handle drag and drop events
-    dropArea.addEventListener('dragenter', function(event) {
-        event.preventDefault();
-        dropArea.classList.add('highlight');
+        // Handle drag and drop events
+        dropArea.addEventListener('dragenter', function(event) {
+            event.preventDefault();
+            dropArea.classList.add('highlight');
+        });
+
+        dropArea.addEventListener('dragover', function(event) {
+            event.preventDefault();
+            dropArea.classList.add('highlight');
+        });
+
+        dropArea.addEventListener('dragleave', function(event) {
+            event.preventDefault();
+            dropArea.classList.remove('highlight');
+        });
+
+        dropArea.addEventListener('drop', function(event) {
+            event.preventDefault();
+            dropArea.classList.remove('highlight');
+
+            const file = event.dataTransfer.files[0];
+            const inputFile = document.getElementById('photo');
+            inputFile.files = event.dataTransfer.files;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedImagePreview.src = e.target.result;
+                selectedImagePreview.style.display = 'block';
+                selectedImagePlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Handle click to open file dialog
+        dropArea.addEventListener('click', function() {
+            const inputFile = document.getElementById('photo');
+            inputFile.click();
+        });
+
+        // Display selected image in the drop area
+        document.getElementById('photo').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImagePreview.src = e.target.result;
+                    selectedImagePreview.style.display = 'block';
+                    selectedImagePlaceholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                selectedImagePreview.src = '';
+                selectedImagePreview.style.display = 'none';
+                selectedImagePlaceholder.style.display = 'block';
+            }
+        });
+
+        // Handle drag and drop events for audio
+        audioDropArea.addEventListener('dragenter', function(event) {
+            event.preventDefault();
+            audioDropArea.classList.add('highlight');
+        });
+
+        audioDropArea.addEventListener('dragover', function(event) {
+            event.preventDefault();
+            audioDropArea.classList.add('highlight');
+        });
+
+        audioDropArea.addEventListener('dragleave', function(event) {
+            event.preventDefault();
+            audioDropArea.classList.remove('highlight');
+        });
+
+        audioDropArea.addEventListener('drop', function(event) {
+            event.preventDefault();
+            audioDropArea.classList.remove('highlight');
+
+            const audioFileInput = document.getElementById('audio-file');
+            audioFileInput.files = event.dataTransfer.files;
+        });
+
+        // Handle click to open file dialog for audio
+        audioDropArea.addEventListener('click', function() {
+            const audioFileInput = document.getElementById('audio-file');
+            audioFileInput.click();
+        });
+
+        // Get the microphone element
+        const microphoneIcon = document.getElementById('microphone');
+        const soundWaves = document.getElementById('soundWaves');
+        const responseElement = document.getElementById('response');
+        const textElement = document.getElementById('text');
+
+        // Function to trigger the sound waves animation
+        function triggerSoundWaves() {
+            soundWaves.classList.remove('animate-waves');
+            void soundWaves.offsetWidth; // Restart the animation
+            soundWaves.classList.add('animate-waves');
+        }
+
+        // Handle click on the microphone icon to trigger sound waves
+        microphoneIcon.addEventListener('click', function() {
+            triggerSoundWaves();
+
+            // Make an AJAX request to the '/process_microphone' route
+            fetch('/process_microphone', {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(reply => {
+                console.log('Response:', reply);
+                // Update the response element with the generated reply
+                responseElement.textContent = 'Response: ' + reply;
+                // Update the text element with the recorded speech
+                textElement.textContent = 'You said: ' + reply;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
     });
-
-    dropArea.addEventListener('dragover', function(event) {
-        event.preventDefault();
-        dropArea.classList.add('highlight');
-    });
-
-    dropArea.addEventListener('dragleave', function(event) {
-        event.preventDefault();
-        dropArea.classList.remove('highlight');
-    });
-
-    dropArea.addEventListener('drop', function(event) {
-        event.preventDefault();
-        dropArea.classList.remove('highlight');
-
-        const file = event.dataTransfer.files[0];
-        const inputFile = document.getElementById('photo');
-        inputFile.files = event.dataTransfer.files;
-    });
-
-    // Handle click to open file dialog
-    dropArea.addEventListener('click', function() {
-        const inputFile = document.getElementById('photo');
-        inputFile.click();
-    });
-});
-
-// Display selected image in the drop area
-// document.getElementById('photo').addEventListener('change', function(event) {
-//     const file = event.target.files[0];
-//     const dropArea = document.getElementById('dropArea');
-    
-//     if (file) {
-//       const reader = new FileReader();
-//       reader.onload = function(e) {
-//         dropArea.innerHTML = ''; // Clear the previous content
-//         const imageElement = document.createElement('img');
-//         imageElement.src = e.target.result;
-//         imageElement.classList.add('img-fluid');
-//         dropArea.appendChild(imageElement);
-//       };
-//       reader.readAsDataURL(file);
-//     } else {
-//       dropArea.innerHTML = '<p>Drag and drop your photo here or click to select</p>'; // Show default text
-//     }
-//   });
-
-document.getElementById('photo').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    const dropArea = document.getElementById('dropArea');
-    
-    if (file) {
-      dropArea.innerHTML = `<p>Selected Image Path: ${file.name}</p>`;
-    } else {
-      dropArea.innerHTML = '<p>Drag and drop your photo here or click to select</p>'; // Show default text
-    }
-  });
 </script>
-{% endblock%}
+{% endblock %}
