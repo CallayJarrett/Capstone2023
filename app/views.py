@@ -1,6 +1,7 @@
 import os
 import openai
 import pyttsx3
+import mimetypes
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash, send_from_directory, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
@@ -128,15 +129,22 @@ def upload():
                 print(filename)
         
             if audio:
+                # Check if the uploaded file is a valid audio format
+                # audio_mime_type = mimetypes.guess_type(audio.filename)[0]
+                # valid_audio_formats = ['audio/wav']
+                
+                # if audio_mime_type not in valid_audio_formats:
+                #     return jsonify({"error": "Invalid audio format. Please upload a WAV file."}), 400
+                
                 filenameAudio = secure_filename(audio.filename)
                 print(filenameAudio)
-                audio.save(os.path.join(app.config['UPLOAD_FOLDER'], filenameAudio))
+                # audio.save(os.path.join(app.config['UPLOAD_FOLDER'], filenameAudio))
                 text = convert_to_text(audio)
                 print("this,",text)
 
                 photopath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                reply = generate_extendscript(text, photopath)
-                print(reply)
+                # reply = generate_extendscript(text, photopath)
+                # print(reply)
             
             try:
                 if not os.path.exists(app.config['UPLOAD_FOLDER']):

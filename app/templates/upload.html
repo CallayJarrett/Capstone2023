@@ -13,51 +13,42 @@
     </div>
 </div>
 
-<div class="upload-container">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="upload-photo">
-                <h3>1. Select Image</h3>
-                <p class="upload-description">Upload an image from your computer (JPG, JPEG, PNG) or drag and drop it here.</p>
-                <div class="drop-area" id="dropArea">
-                    <img src="{{ url_for('static', filename='images/image-icon.png') }}" alt="Photo" id="photo-icon" width="60" height="60">
-                    <p>DRAG AND DROP YOUR PHOTO HERE</p>
-                </div>
-                <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-                    {{ form.csrf_token }}
+<form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    <div class="upload-container">
+        <div class="row"> 
+            <div class="col-md-6">
+                <div class="upload-photo">
+                    <h3>1. Select Image</h3>
+                    <p class="upload-description">Upload an image from your computer (JPG, JPEG, PNG) or drag and drop it here.</p>
+                    <div class="drop-area" id="dropArea">
+                        <img src="{{ url_for('static', filename='images/image-icon.png') }}" alt="Photo" id="photo-icon" width="60" height="60">
+                        <p>DRAG AND DROP YOUR PHOTO HERE</p>
+                    </div>
                     <div class="form-group">
-                        <label for="photo" class="form-label" align="left">Photo:</label>
                         <div class="file-drop">
                             {% if selected_image %}
                                 <input type="hidden" name="selected_image" value="{{ selected_image }}"> <!-- Add selected image URL as hidden input -->
                                 <img src="{{ selected_image }}" class="selected-image-preview" alt="Selected Image" style="display: block; width: 400px; height: 300px;"> <!-- Display the selected image as a preview -->
-                                <p>Image Path: {{ selected_image }}</p>
                             {% else %}
                                 <img src="{{ url_for('static', filename='images/placeholder.png') }}" class="selected-image-placeholder" alt="Placeholder" style="display: block; width: 400px; height: 300px;">
                             {% endif %}
                             <input type="file" name="photo" id="photo" class="form-control-file" style="display: none;">
                         </div>
-                    </div>                    
-                </form>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="upload-audio">
-                <h3>2. Select Audio</h3>
-                <p class="upload-description">Upload an audio file from your computer (WAV) or use the microphone to record.</p>
-                <div class="drop-area" id="audioDropArea">
-                    <img src="{{ url_for('static', filename='images/audio-icon.png') }}" alt="Audio" id="audio-icon" width="60" height="60">
-                    <p>DRAG AND DROP YOUR AUDIO FILE HERE</p>
+                    </div>
                 </div>
-                <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-                    {{ form.csrf_token }}
+            </div>
+            <div class="col-md-6">
+                <div class="upload-audio">
+                    <h3>2. Select Audio</h3>
+                    <p class="upload-description">Upload an audio file from your computer (WAV) or use the microphone to record.</p>
+                    <div class="drop-area" id="audioDropArea">
+                        <img src="{{ url_for('static', filename='images/audio-icon.png') }}" alt="Audio" id="audio-icon" width="60" height="60">
+                        <p>DRAG AND DROP YOUR AUDIO FILE HERE</p>
+                    </div>
                     <div class="form-group">
-                        <label for="audio-file" class="form-label">OR Record Your Audio:</label>
+                        <label for="audio-file" class="record-label">OR <p>Record Your Command:</p></label>
                         <div class="file-drop">
-                            {% if selected_audio %}
-                                <input type="hidden" name="selected_audio" value="{{ selected_audio }}"> <!-- Add selected audio URL as hidden input -->
-                                <p>Audio Path: {{ selected_audio }}</p>
-                            {% endif %}
                             {{ form.audio(id="audio-file", class="form-control-file") }} 
                         </div>
                     </div>
@@ -70,13 +61,13 @@
                         </div>
                         <p id="text" class="text"></p>
                         <p id="response" class="response"></p>
-                        <button type="submit" class="btn btn-primary">UPLOAD</button>
+                        <button type="submit" class="btn">UPLOAD</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 {% endblock %}
 
 {% block js %} 
@@ -86,7 +77,7 @@
         const audioDropArea = document.getElementById('audioDropArea');
         const selectedImagePreview = document.querySelector('.selected-image-preview');
         const selectedImagePlaceholder = document.querySelector('.selected-image-placeholder');
-
+        
         // Handle drag and drop events
         dropArea.addEventListener('dragenter', function(event) {
             event.preventDefault();
@@ -110,14 +101,6 @@
             const file = event.dataTransfer.files[0];
             const inputFile = document.getElementById('photo');
             inputFile.files = event.dataTransfer.files;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                selectedImagePreview.src = e.target.result;
-                selectedImagePreview.style.display = 'block';
-                selectedImagePlaceholder.style.display = 'none';
-            };
-            reader.readAsDataURL(file);
         });
 
         // Handle click to open file dialog
@@ -130,6 +113,7 @@
         document.getElementById('photo').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
+                dropArea.innerHTML = `<p>${file.name}</p>`;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     selectedImagePreview.src = e.target.result;
@@ -172,6 +156,15 @@
         audioDropArea.addEventListener('click', function() {
             const audioFileInput = document.getElementById('audio-file');
             audioFileInput.click();
+        });
+
+        document.getElementById('audio-file').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Update the drop area with the audio file name
+                const audioFileName = document.getElementById('audioFileName');
+                audioFileName.textContent = file.name;
+            }
         });
 
         // Get the microphone element

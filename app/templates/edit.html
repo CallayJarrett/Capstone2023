@@ -38,7 +38,6 @@
 {% block js %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-        
       // Handle click to open file dialog
       dropArea.addEventListener('click', function() {
           const inputFile = document.getElementById('photo');
@@ -77,9 +76,7 @@ document.querySelectorAll('.img-fluid').forEach(image => {
       window.location.href = `{{ url_for('upload') }}?selected_image=${encodeURIComponent(selectedImageURL)}`;
     });
   });
-
 </script>
-
 {% endblock %}
 
 
