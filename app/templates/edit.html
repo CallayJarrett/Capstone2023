@@ -4,14 +4,16 @@
 <div class="Shortcuts">
   <h2>Shortcuts</h2>
   <div id="shortcutButtons" class="d-flex justify-content-between">
-    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Crop allows you to trim or cut unwanted parts of an image, focusing on the desired area." disabled>Crop</button>
-    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Resize lets you adjust the dimensions of an image, making it larger or smaller." disabled>Resize</button>
-    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Blur is used to soften or obscure parts of the image, creating a subtle, out-of-focus effect." disabled>Blur</button>
-    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Opacity controls the transparency of an image, making it more or less see-through." disabled>Opacity</button>
-    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Hue changes the overall color of the image, shifting it along the color spectrum." disabled>Hue</button>
-    <button class="shortcut-btns" data-toggle="tooltip" data-placement="top" title="Saturation adjusts the intensity of colors in an image, making them more or less vibrant." disabled>Saturation</button>
+    <a href="{{ url_for('shortcuts', script='crop_script.jsx') }}"><button class="shortcut-btns" data-script="crop_script.jsx" data-toggle="tooltip" data-placement="top" title="Crop allows you to trim or cut unwanted parts of an image, focusing on the desired area.">Crop</button></a>
+    <a href = "{{url_for('shortcuts', script='resize_script.jsx') }}"><button class="shortcut-btns" data-script="resize_script.jsx" data-toggle="tooltip" data-placement="top" title="Resize lets you adjust the dimensions of an image, making it larger or smaller.">Resize</button></a>
+    <a href = "{{ url_for('shortcuts', script='blur_script.jsx') }}"><button class="shortcut-btns" data-script="blur_script.jsx" data-toggle="tooltip" data-placement="top" title="Blur is used to soften or obscure parts of the image, creating a subtle, out-of-focus effect.">Blur</button></a>
+    <a href = "{{ url_for('shortcuts', script='opacity_script.jsx') }}"><button class="shortcut-btns" data-script="opacity_script.jsx" data-toggle="tooltip" data-placement="top" title="Opacity controls the transparency of an image, making it more or less see-through.">Opacity</button></a>
+    <a href = "{{ url_for('shortcuts', script='hue_script.jsx') }}"><button class="shortcut-btns" data-script="hue_script.jsx" data-toggle="tooltip" data-placement="top" title="Hue changes the overall color of the image, shifting it along the color spectrum.">Hue</button></a>
+    <a href = "{{ url_for('shortcuts', script='saturation_script.jsx') }}"><button class="shortcut-btns" data-script="saturation_script.jsx" data-toggle="tooltip" data-placement="top" title="Saturation adjusts the intensity of colors in an image, making them more or less vibrant.">Saturation</button></a>
   </div>
 </div>
+
+
 
 <!-- Edit Library -->
 <div class="ed-lib">

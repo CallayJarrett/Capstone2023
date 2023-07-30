@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block main %}
+<form action="{{ url_for('shortcuts') }}" method="post" enctype="multipart/form-data">
+    {{ uploadform.csrf_token }}
+    {{ uploadform.hidden_tag() }}
+    <input type="file" name="file" id="photoInput" accept=".jpg, .jpeg, .png">
+    <input type="hidden" name="script" value="{{ request.args.get('script') }}">
+    <!-- Add a hidden input field to hold the script name -->
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+{% endblock %}

@@ -80,5 +80,82 @@ microphonepic.addEventListener('click', function() {
   //     console.error('Error:', error);
     });
 //});
-  
-  
+ 
+document.addEventListener('DOMContentLoaded', function() {
+  const scriptButtons = document.querySelectorAll('.shortcut-btns');
+
+  scriptButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const scriptFileName = this.getAttribute('data-script');
+      executeScript(scriptFileName);
+    });
+  });
+});
+
+/*function executeScript(scriptFileName) {
+  // Send the selected script file name to the Flask backend using AJAX
+  fetch('/shortcutupload', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ script: scriptFileName }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Script executed successfully.');
+      } else {
+        alert('Failed to execute the script.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while executing the script.');
+    });
+}*/
+
+document.addEventListener('DOMContentLoaded', function() {
+  const scriptButtons = document.querySelectorAll('.shortcut-btns');
+
+  scriptButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const scriptFileName = this.getAttribute('data-script');
+      executeScriptAndUploadPhoto(scriptFileName);
+    });
+  });
+})
+
+function executeScriptAndUploadPhoto(scriptFileName) {
+  // Function to upload the photo and execute the selected script
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.jpg, .jpeg, .png';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('script', scriptFileName);
+
+      // Make an AJAX request to Flask to handle the photo upload and script execution
+      fetch('/shortcuts', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Script executed successfully.');
+          } else {
+            alert('Failed to execute the script.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while executing the script.');
+        });
+    }
+  };
+  input.click();
+}

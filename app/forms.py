@@ -28,3 +28,9 @@ class PhotoForm(FlaskForm):
     audio = FileField('Audio Recording', validators=[
         FileAllowed(['wav', 'flac'], 'Audio files only!')
     ])
+
+class UploadForm(FlaskForm):
+    photo = FileField('Photo', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png'], 'Images only!')
+    ])

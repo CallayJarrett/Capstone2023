@@ -2,14 +2,16 @@ import os
 import openai
 import pyttsx3
 from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash, send_from_directory
+from flask import render_template, request, redirect, url_for, flash, send_from_directory, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from app.speech import *
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
-from app.forms import UserForm, LoginForm, PhotoForm
+from app.forms import UserForm, LoginForm, PhotoForm, UploadForm
 from app.models import User, Photo, VoiceCommand, Designs, ExtendScripts
 import speech_recognition as sr
+from app.photo_execute import *
+
 
  
 @app.route('/')
@@ -18,7 +20,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/edit')
-@login_required
+#@login_required
 def edit():
     # Call the get_uploaded_images function to get a list of filenames
     filenames = get_uploaded_images()
@@ -30,34 +32,92 @@ def edit():
     return render_template('edit.html', image_urls=image_urls)
 
 @app.route('/library')
-@login_required
+#@login_required
 def library():
     """Render website's library page."""
     return render_template('library.html')
 
 @app.route('/profile')
-@login_required
+#@login_required
 def profile():
     """Render website's profile page."""
     return render_template('profile.html')
 
 @app.route('/voicecommands')
-@login_required
+#@login_required
 def voicecommands():
     """Render website's upload page."""
     return render_template('voicecommands.html')
 
 @app.route('/designs')
-@login_required
+#@login_required
 def designs():
     """Render website's upload page."""
     return render_template('designs.html')
 
 @app.route('/scripts')
-@login_required
+#@login_required
 def scripts():
     scripts = ExtendScripts.get_all_scripts()
     return render_template('scripts.html', scripts=scripts)
+
+"""@app.route('/shortcuts', methods=['GET', 'POST'])
+def shortcuts():
+    
+    if request.method == 'POST':
+        photo = request.files['file']
+        script_filename = request.form.get('script')
+
+        if photo and script_filename:
+            filename = secure_filename(photo.filename)
+            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            photo.save(photo_path)
+            script_file_path = os.path.join(app.config['SCRIPTS_FOLDER'], script_filename)
+
+            # Call the function to open Photoshop with the uploaded photo
+            open_photoshop_cs6(photo_path)
+
+            # Call the function to execute the selected script file
+            execute_script(script_file_path)
+
+            # Flash message or any other response you want to return to the user
+            flash('File uploaded and script executed successfully.')
+
+            return jsonify({"success": True}), 200
+
+    
+    uploadform = UploadForm()
+    return render_template('shortcuts.html', uploadform = uploadform) """
+
+
+
+@app.route('/shortcuts', methods=['GET', 'POST'])
+def shortcuts():
+    """Render website's shortcut edits page."""
+    if request.method == 'POST':
+        photo = request.files['file']
+        script_filename = request.form.get('script')
+
+        if photo and script_filename:
+            filename = secure_filename(photo.filename)
+            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            photo.save(photo_path)
+            script_file_path = os.path.join(app.config['SCRIPTS_FOLDER'], script_filename)
+
+            # Call the function to open Photoshop with the uploaded photo
+            open_photoshop_cs6(photo_path)
+
+            # Call the function to execute the selected script file
+            execute_script(script_file_path)
+
+            # Flash message or any other response you want to return to the user
+            flash('File uploaded and script executed successfully.')
+
+            return jsonify({"success": True}), 200
+
+    uploadform = UploadForm()
+    return render_template('shortcuts.html', uploadform=uploadform)
+
 
 # Set OpenAI API key
 openai.api_key = "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"
@@ -110,7 +170,7 @@ def generate_extendscript(text):
     return reply
 
 @app.route('/upload', methods=['POST', 'GET'])
-@login_required
+#@login_required
 def upload():
     photoform = PhotoForm()
     
@@ -267,7 +327,7 @@ def login():
 
 
 @app.route('/logout')
-@login_required
+#@login_required
 def logout():
     logout_user()
     flash('You have been logged out.', 'success')
